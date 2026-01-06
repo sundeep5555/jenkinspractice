@@ -1,0 +1,59 @@
+pipeline {
+    agent any
+
+    environment {
+        APP_NAME = "JenkinsPractice"
+        BUILD_ENV = "dev"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh '''
+                    echo "Building application: $APP_NAME"
+                    echo "Environment: $BUILD_ENV"
+                '''
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'echo "Running unit tests"'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                sh '''
+                    mkdir -p output
+                    echo "Build successful" > output/result.txt
+                '''
+            }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                archiveArtifacts artifacts: 'output/**', fingerprint: true
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Pipeline completed successfully'
+        }
+        failure {
+            echo '❌ Pipeline failed'
+        }
+        always {
+            echo 'Pipeline execution finished'
+        }
+    }
+}
+
