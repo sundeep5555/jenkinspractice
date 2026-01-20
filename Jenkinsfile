@@ -15,7 +15,7 @@ pipeline {
                 pwd
                 ls -l
 
-                echo "Moving to demoapp"
+                echo "Moving to demoapp inside"
                 cd demoapp
 
                 mvn -version
