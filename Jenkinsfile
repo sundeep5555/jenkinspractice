@@ -2,60 +2,25 @@ pipeline {
     agent any
 
     stages {
-        stage('Matrix Build') {
-            matrix {
-                axes {
-                    axis {
-                        name 'OS'
-                        values 'linux', 'windows'
-                    }
-                    axis {
-                        name 'ENV'
-                        values 'dev', 'qa'
-                    }
-                }
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
 
-                // Optional: exclude combinations
-                excludes {
-                    exclude {
-                        axis {
-                            name 'OS'
-                            values 'windows'
-                        }
-                        axis {
-                            name 'ENV'
-                            values 'qa'
-                        }
-                    }
-                }
+        stage('Build') {
+            steps {
+                sh '''
+                echo "Workspace:"
+                pwd
+                ls -l
 
-                stages {
-                    stage('Checkout') {
-                        steps {
-                            checkout scm
-                        }
-                    }
+                echo "Moving to demoapp"
+                cd demoapp
 
-                    stage('Build & Test') {
-                        steps {
-                            script {
-                                if (env.OS == 'windows') {
-                                    bat '''
-                                    echo OS=%OS%
-                                    echo ENV=%ENV%
-                                    mvn clean test
-                                    '''
-                                } else {
-                                    sh '''
-                                    echo "OS=$OS"
-                                    echo "ENV=$ENV"
-                                    mvn clean test
-                                    '''
-                                }
-                            }
-                        }
-                    }
-                }
+                mvn -version
+                mvn clean test
+                '''
             }
         }
     }
