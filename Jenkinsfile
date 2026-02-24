@@ -25,3 +25,7 @@ pipeline {
         }
     }
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> af23e1b (initial commit)
